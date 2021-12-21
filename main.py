@@ -1,3 +1,6 @@
+import csv
+from datetime import date, datetime
+from os import walk
 from tkinter import *
 from itertools import count
 import psutil
@@ -23,6 +26,7 @@ indexNet = 0
 index = count()
 indexDisk = 0
 lastDiskStat = 0
+filePath = ''
 k = 0
 
 
@@ -30,7 +34,6 @@ def show():
     fig = plt.figure(figsize=(10, 10))
     ani = FuncAnimation(plt.gcf(), animateData, interval=1000)
     plt.tight_layout()
-
     plt.show()
 
 
@@ -108,6 +111,7 @@ def plotButton():
     global k
     if k == 0:
         k = 1
+
         def savePdf():
             print("am intrat aici")
             plt.savefig('plotTry.pdf')
@@ -121,14 +125,6 @@ def plotButton():
         b2 = Button(text="Save as Pdf", command=savePdf)
         b2.place(x=200, y=350, width=150)
         plt.show()
-    # if k == 0:
-    #     pop = Tk()
-    #     def save():
-    #         plt.savefig('plot.png')
-    #
-    #     b = Button(text="SAVE", bg="red", fg='white', command=save)
-    #     b.pack()
-    #     k = 1
 
 
 def animateData(i):
@@ -157,7 +153,7 @@ def animateData(i):
     plotButton()
 
     plt.plot()
-
+    dataToCsv()
 
 def net_usage(inf="Wi-Fi"):
     global indexNet
@@ -206,7 +202,6 @@ def disk_usage():
         return [diskIn * 8000, diskOut * 8000]
     else:
         disk_stat = lastDiskStat
-        # print(disk_stat)
         disk_in_1 = disk_stat[2]
         disk_out_1 = disk_stat[3]
         disk_stat = psutil.disk_io_counters()
@@ -218,6 +213,46 @@ def disk_usage():
         return [disk_in * 8, disk_out * 8]
 
 
+def dataToCsv():
+    global filePath
+    global yNetRecvSpeed, yNetSentSpeed, yDiskSpeedRead, y_val, y_val1, yDiskSpeedWrite
+    with open(filePath, 'a') as f:
+        writer = csv.writer(f)
+        data =[y_val1[-1], y_val[-1], psutil.disk_usage('/').percent, yDiskSpeedWrite[-1], yDiskSpeedRead[-1],yNetRecvSpeed[-1], yNetSentSpeed[-1]]
+        writer.writerow(data)
+        f.close()
+
+
+def makeCsv():
+    global filePath
+    time = datetime.now()
+    path = time.strftime("%d") + time.strftime("%m") + time.strftime("%y")
+    path = path + "hm" + time.strftime("%H%M")
+    completePath = 'history/' + path + '.csv'
+    print(completePath)
+    header = ['CPU usage', 'Memory', 'Disk Usage', 'Disk write speed',
+              'Disk read speed', 'Wi-Fi speed receive', 'Wi-Fi speed Send']
+    filePath = completePath
+    with open(completePath, 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+def getAvailableData():
+    f = []
+    filenamesT = tuple()
+    for (dirpath, dirnames, filenames) in walk('history/'):
+        f.extend(filenames)
+        filenamesT = filenamesT + tuple(filenames)
+    return filenamesT
+def getOptionValue():
+    print("value is:" + variable.get())
+def plotOption():
+    print("value is:" + variable.get())
+    path = 'history/' + variable.get()
+    file = open(path)
+    csvreader = csv.reader(file)
+    for row in csvreader:
+        print("Row", row)
+
 if __name__ == '__main__':
     root = Tk()
     root.title('Task Manager')
@@ -225,10 +260,17 @@ if __name__ == '__main__':
 
     my_button = Button(root, text="Task manager", command=show)
     my_button.place(x=200, y=200, width=150)
+    global variable
+    variable = StringVar(root)
+    variable.set("Chose Date")  # default value
+    choices = tuple("")
+    choices = choices + getAvailableData()
+    w = OptionMenu(root, variable, *choices)
+    w.pack()
+    w.place(x=100, y=300, width=150)
 
-    my_button2 = Button(root, text="History", command=show)
-    my_button2.place(x=200, y=250, width=150)
+    button = Button(root, text="View History", command=plotOption)
+    button.pack()
+    button.place(x=290, y=300, width=150)
+    makeCsv()
     root.mainloop()
-
-    # for i in range(0, 10000):
-    # print("Net usage",net_usage235())
