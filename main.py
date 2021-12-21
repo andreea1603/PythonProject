@@ -1,6 +1,5 @@
 from tkinter import *
 from itertools import count
-from time import sleep
 import psutil
 import matplotlib.pylab as plt
 from matplotlib.animation import FuncAnimation
@@ -24,11 +23,14 @@ indexNet = 0
 index = count()
 indexDisk = 0
 lastDiskStat = 0
+k = 0
+
 
 def show():
-    plt.figure(figsize=(10, 10))
+    fig = plt.figure(figsize=(10, 10))
     ani = FuncAnimation(plt.gcf(), animateData, interval=1000)
     plt.tight_layout()
+
     plt.show()
 
 
@@ -102,6 +104,33 @@ def plotDisk():
     plt.show()
 
 
+def plotButton():
+    global k
+    if k == 0:
+        k = 1
+        def savePdf():
+            print("am intrat aici")
+            plt.savefig('plotTry.pdf')
+
+        def savePng():
+            print("am intrat aici")
+            plt.savefig('plotTry.png')
+
+        b1 = Button(text="Save as Png", command=savePng)
+        b1.place(x=200, y=400, width=150)
+        b2 = Button(text="Save as Pdf", command=savePdf)
+        b2.place(x=200, y=350, width=150)
+        plt.show()
+    # if k == 0:
+    #     pop = Tk()
+    #     def save():
+    #         plt.savefig('plot.png')
+    #
+    #     b = Button(text="SAVE", bg="red", fg='white', command=save)
+    #     b.pack()
+    #     k = 1
+
+
 def animateData(i):
     plt.subplot(2, 4, 1)
     plotMemory()
@@ -123,6 +152,9 @@ def animateData(i):
 
     plt.subplot(2, 4, 6)
     plotDiskSpeed(1)
+
+    plt.subplot(2, 4, 8)
+    plotButton()
 
     plt.plot()
 
@@ -153,7 +185,7 @@ def net_usage(inf="Wi-Fi"):
         net_in = round((net_in_2 - net_in_1) / 1024 / 1024, 3)
         net_out = round((net_out_2 - net_out_1) / 1024 / 1024, 3)
         lastNetStat = net_stat
-        print(f"Current net-usage:\n IIOIOIOIO IN: {net_in * 8 * 1000} MB/s, OUT: {net_out * 8*1000} MB/s")
+        # print(f"Current net-usage:\n IIOIOIOIO IN: {net_in * 8 * 1000} MB/s, OUT: {net_out * 8*1000} MB/s")
         return [net_in * 8000, net_out * 8000]
 
 
@@ -174,7 +206,7 @@ def disk_usage():
         return [diskIn * 8000, diskOut * 8000]
     else:
         disk_stat = lastDiskStat
-        print(disk_stat)
+        # print(disk_stat)
         disk_in_1 = disk_stat[2]
         disk_out_1 = disk_stat[3]
         disk_stat = psutil.disk_io_counters()
@@ -184,33 +216,6 @@ def disk_usage():
         disk_out = round((disk_out_2 - disk_out_1) / 1024 / 1024, 3)
         lastDiskStat = disk_stat
         return [disk_in * 8, disk_out * 8]
-# def disk_usage235():
-#     disk_stat = psutil.disk_io_counters()
-#     disk_in_1 = disk_stat[2]
-#     disk_out_1 = disk_stat[3]
-#     sleep(1)
-#     disk_stat = psutil.disk_io_counters()
-#     disk_in_2 = disk_stat[2]
-#     disk_out_2 = disk_stat[3]
-#
-#     disk_in = round((disk_in_2 - disk_in_1) / 1000 / 1000 , 3)
-#     disk_out = round((disk_out_2 - disk_out_1) / 1000 / 1000, 3)
-#     print(f"Current DISK :\nIN: {disk_in*8} MB/s, OUT: {disk_out*8} MB/s")
-#     return [disk_in * 8, disk_out * 8]
-# def net_usage235(inf="Wi-Fi"):
-#     net_stat = psutil.net_io_counters(pernic=True, nowrap=True)[inf]
-#     net_in_1 = net_stat.bytes_recv
-#     net_out_1 = net_stat.bytes_sent
-#
-#     sleep(1)
-#     net_stat = psutil.net_io_counters(pernic=True, nowrap=True)[inf]
-#     net_in_2 = net_stat.bytes_recv
-#     net_out_2 = net_stat.bytes_sent
-#
-#     net_in = round((net_in_2 - net_in_1) / 1024 / 1024, 3)
-#     net_out = round((net_out_2 - net_out_1) / 1024 / 1024, 3)
-#     #print(f"Current net-usage:\nIN: {net_in*8} MB/s, OUT: {net_out*8} MB/s")
-#     return [net_in * 8000, net_out * 8000]
 
 
 if __name__ == '__main__':
@@ -224,5 +229,6 @@ if __name__ == '__main__':
     my_button2 = Button(root, text="History", command=show)
     my_button2.place(x=200, y=250, width=150)
     root.mainloop()
-    for i in range(0, 10000):
-        print("Net usage",net_usage235())
+
+    # for i in range(0, 10000):
+    # print("Net usage",net_usage235())
