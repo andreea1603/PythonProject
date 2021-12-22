@@ -1,8 +1,9 @@
 import csv
 import numpy as np
 from matplotlib import pyplot as plt
-import main
 import Variable
+
+
 class History:
     xMemory = []
     xCpu = []
@@ -40,7 +41,7 @@ class History:
         self.plotTry()
 
     def plotDisk(self):
-        y = np.array([float(self.xDiskUsage[-1]), float(100-self.xDiskUsage[-1])])
+        y = np.array([float(self.xDiskUsage[-1]), float(100 - self.xDiskUsage[-1])])
         myLabels = ["Used", "Not used"]
         plt.title("Disk usage")
         myExplode = [0.2, 0]
@@ -57,19 +58,19 @@ class History:
             plt.plot(yPoints, xPoints, color="firebrick", linestyle="--")
         elif data == "Cpu":
             xPoints = np.array(self.xCpu)
-            plt.fill_between(yPoints,xPoints, alpha=0.25, color="magenta")
-            plt.plot(yPoints,xPoints, color="magenta")
+            plt.fill_between(yPoints, xPoints, alpha=0.25, color="magenta")
+            plt.plot(yPoints, xPoints, color="magenta")
         elif data == "NetRec":
             xPoints = np.array(self.xNetRecvSpeed)
-            plt.plot(yPoints,xPoints, color="darkviolet")
+            plt.plot(yPoints, xPoints, color="darkviolet")
         elif data == "NetSend":
             xPoints = np.array(self.xNetSentSpeed)
             plt.fill_between(yPoints, xPoints, alpha=0.25, color="salmon")
-            plt.plot(yPoints,xPoints, color="magenta", linestyle="--")
+            plt.plot(yPoints, xPoints, color="magenta", linestyle="--")
         elif data == "DiskRead":
             xPoints = np.array(self.xDiskSpeedRead)
-            plt.fill_between(yPoints,xPoints, alpha=0.45, color="dodgerblue")
-            plt.plot(yPoints,xPoints, color="dodgerblue", linestyle="-.")
+            plt.fill_between(yPoints, xPoints, alpha=0.45, color="dodgerblue")
+            plt.plot(yPoints, xPoints, color="dodgerblue", linestyle="-.")
         else:
             xPoints = np.array(self.xDiskSpeedWrite)
             plt.plot(yPoints, xPoints, color="deeppink", linestyle="-.")
@@ -84,25 +85,21 @@ class History:
         plt.title(Variable.variable.get())
         plt.subplot(3, 2, 1)
         self.plotData("Memory")
-
         plt.subplot(3, 2, 2)
+
         self.plotData("Cpu")
-
         plt.subplot(3, 3, 4)
+
         self.plotData("NetRec")
-
         plt.subplot(3, 3, 5)
+
         self.plotData("NetSend")
-
         plt.subplot(3, 3, 6)
+
         self.plotData("DiskRead")
-
-
         plt.subplot(3, 2, 5)
-        self.plotData("DiscWrite")
 
+        self.plotData("DiscWrite")
         plt.subplot(3, 2, 6)
         self.plotDisk()
-
         plt.show()
-
