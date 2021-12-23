@@ -3,14 +3,18 @@ from matplotlib import pyplot as plt
 
 
 def savePdf():
+    """ Description: saving the plot as pdf    """
     plt.savefig('plotTry.pdf')
 
 
 def savePng():
+    """ Description: saving the plot as png    """
     plt.savefig('plotTry.png')
 
 
 def plotButton(k):
+    """ Description: displaying the button for saving the plot """
+
     if k == 0:
         k = 1
         b1 = Button(text="Save as Png", command=savePng)
@@ -18,3 +22,4 @@ def plotButton(k):
         b2 = Button(text="Save as Pdf", command=savePdf)
         b2.place(x=200, y=350, width=150)
         plt.show()
+        print(k)

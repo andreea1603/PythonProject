@@ -1,5 +1,3 @@
-import csv
-from datetime import date, datetime
 from os import walk
 from tkinter import *
 from itertools import count
@@ -7,7 +5,6 @@ import psutil
 import matplotlib.pylab as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
-
 import DataToCsv
 import History
 import Variable
@@ -15,6 +12,9 @@ import SavePlot
 
 
 def plotDisk():
+    """ Description:
+    It plots the data regarding the disk usage
+    """
     disk = psutil.disk_usage('/').percent
     y = np.array([disk, 100 - disk])
     myLabels = ["Used", "Not used"]
@@ -25,6 +25,9 @@ def plotDisk():
 
 
 def getAvailableData():
+    """ Description: this function searches in folder history and returns all the files there
+    @:returns filenamesT: returns all files from history
+    """
     f = []
     filenamesT = tuple()
     for (dirpath, dirnames, filenames) in walk('history/'):
@@ -57,6 +60,8 @@ class Main:
     k = 0
 
     def clearValues(self):
+        """ Description: this function erase all the data stored at the moment
+        """
         self.xMemory = []
         self.xCpu = []
         self.xNetSentSpeed = []
@@ -71,14 +76,20 @@ class Main:
         self.yDiskSpeedRead = []
 
     def show(self):
+        """ Description: in this function is called the animation function for the data
+         at each second  and here the csv history is made
+        """
         self.clearValues()
-        fig = plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(10, 10))
         self.filePath = DataToCsv.makeCsv()
-        ani = FuncAnimation(plt.gcf(), self.animateData, interval=1000)
+        FuncAnimation(plt.gcf(), self.animateData, interval=1000)
         plt.tight_layout()
         plt.show()
 
     def plotMemory(self):
+        """ Description:
+        It plots the data regarding the memory usage
+        """
         var = float(psutil.virtual_memory().percent)
         self.yMemory.append(var)
         self.xMemory.append(next(self.index))
@@ -91,6 +102,9 @@ class Main:
         plt.xlabel("Time")
 
     def plotCPU(self):
+        """ Description:
+                It plots the data regarding the CPU usage
+        """
         var = float(psutil.cpu_percent())
         self.yCpu.append(var)
         self.xCpu.append(next(self.index))
@@ -102,6 +116,10 @@ class Main:
         plt.plot(self.xCpu, self.yCpu, color="mediumvioletred")
 
     def plotDiskSpeed(self, i):
+        """ Description:
+                It plots the data regarding the disk speed
+            @:param i: i will be 0 if we want the write speed and 1 for the read speed
+        """
         var = float(self.diskUsage()[i])
         plt.cla()
         if i == 0:
@@ -119,6 +137,10 @@ class Main:
         plt.xlabel("Time")
 
     def plotNetSpeed(self, i):
+        """ Description:
+                It plots the data regarding the Wi-Fi speed
+            @:param i: i will be 0 if we want the receive speed and 1 for the sent speed
+        """
         var = float(self.netUsage()[i])
         if i == 0:
             plt.title("Wi-fi Speed Recv")
@@ -136,7 +158,13 @@ class Main:
         plt.ylabel("KB/s")
         plt.xlabel("Time")
 
-    def animateData(self, i):
+    def animateData(self):
+        """ Description:
+                This function fixes the plots positions accordingly;
+                 it is called at every 1 second in order to update the values;
+                 it created the save button for pdf/png
+                 it saves the data in the csv file created;
+        """
         plt.subplot(3, 2, 1)
         self.plotMemory()
 
@@ -160,9 +188,14 @@ class Main:
 
         SavePlot.plotButton(self.k)
         plt.plot()
-        DataToCsv.dataToCsv(self.filePath, self.yCpu, self.yMemory, self.yDiskSpeedWrite, self.yDiskSpeedRead, self.yNetRecvSpeed, self.yNetSentSpeed)
+        DataToCsv.dataToCsv(self.filePath, self.yCpu, self.yMemory, self.yDiskSpeedWrite,
+                            self.yDiskSpeedRead, self.yNetRecvSpeed, self.yNetSentSpeed)
 
     def netUsage(self, inf="Wi-Fi"):
+        """ Description:
+                it computes the Wi-Fi speed for received and send data
+                @:return [a, b]: Wi-Fi speed for received and send data
+        """
         if self.indexNet == 0:
             lastNetStat = psutil.net_io_counters(pernic=True, nowrap=True)[inf]
             netIn1 = lastNetStat.bytes_recv
@@ -189,6 +222,10 @@ class Main:
             return [netIn * 8000, netOut * 8000]
 
     def diskUsage(self):
+        """ Description:
+                it computes the disk speed for read and write data
+                @:return [a, b]: disk speed for read and write data
+        """
         if self.indexDisk == 0:
             lastDiskStat = psutil.disk_io_counters()
             diskIn1 = lastDiskStat[2]
@@ -215,7 +252,11 @@ class Main:
 
 
 def Buttons(root, main):
-
+    """ Description:
+                    it displays the buttons for Task manager view and history and the data options
+        @:param root: tkinter canvas
+        @:param main: all the information needed for ploting and saving the graphs
+    """
     my_button = Button(root, text="Task manager", command=main.show)
     my_button.place(x=200, y=200, width=150)
 
@@ -233,6 +274,9 @@ def Buttons(root, main):
 
 
 def Menu():
+    """ Description:
+                    it displays the main menu
+    """
     root = Tk()
     root.title('Task Manager')
     root.geometry("500x500")

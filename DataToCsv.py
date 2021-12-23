@@ -4,6 +4,9 @@ import psutil
 
 
 def makeCsv():
+    """ Description: this function creates a file with the name of the current date and time and
+    writes the first line in it
+            """
     time = datetime.now()
     path = time.strftime("%d") + time.strftime("%m") + time.strftime("%y")
     path = path + "hm" + time.strftime("%H%M")
@@ -17,10 +20,12 @@ def makeCsv():
     return filePath
 
 
-def dataToCsv(filePath, yCpu, yMemory, yDiskSpeedWrite, yDiskSpeedRead, yNetRecvSpeed, yNetSentSpeed):
-    with open(filePath, 'a') as f:
+def dataToCsv(file_path, y_cpu, y_memory, y_disk_speed_write, y_disk_speed_read, y_net_recv_speed, y_net_sent_speed):
+    """ Description: this function adds the data at each iteration in the csv
+            """
+    with open(file_path, 'a') as f:
         writer = csv.writer(f)
-        data = [yCpu[-1], yMemory[-1], psutil.disk_usage('/').percent, yDiskSpeedWrite[-1], yDiskSpeedRead[-1],
-                yNetRecvSpeed[-1], yNetSentSpeed[-1]]
+        data = [y_cpu[-1], y_memory[-1], psutil.disk_usage('/').percent, y_disk_speed_write[-1], y_disk_speed_read[-1],
+                y_net_recv_speed[-1], y_net_sent_speed[-1]]
         writer.writerow(data)
         f.close()

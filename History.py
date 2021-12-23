@@ -14,6 +14,8 @@ class History:
     xDiskUsage = []
 
     def clearValues(self):
+        """ Description: this function erase all the data stored at the moment
+                """
         self.xMemory = []
         self.xCpu = []
         self.xNetSentSpeed = []
@@ -23,6 +25,8 @@ class History:
         self.xDiskUsage = []
 
     def plotOption(self):
+        """ Description: this plots the graphic resulted by the data found in the csv
+                """
         path = 'history/' + Variable.variable.get()
         self.clearValues()
         file = open(path)
@@ -41,6 +45,9 @@ class History:
         self.plotTry()
 
     def plotDisk(self):
+        """ Description:
+                It plots the data regarding the disk usage
+        """
         y = np.array([float(self.xDiskUsage[-1]), float(100 - self.xDiskUsage[-1])])
         myLabels = ["Used", "Not used"]
         plt.title("Disk usage")
@@ -48,6 +55,10 @@ class History:
         plt.pie(y, labels=myLabels, explode=myExplode, shadow=True, autopct='%1.2f%%')
 
     def plotData(self, data):
+        """ Description:
+                It plots the data regarding the Wi-Fi speed, memory, cpu, disk speed
+                @:param data: the type of data we want to display
+        """
         y = []
         for i in range(0, len(self.xMemory)):
             y.append(i)
@@ -79,6 +90,9 @@ class History:
         plt.xlabel("Time")
 
     def plotTry(self):
+        """ Description:
+                        This function fixes the plots positions accordingly;
+                """
         fig = plt.figure(figsize=(11, 8))
         fig.canvas.set_window_title('Setting up window title.')
         fig.subplots_adjust(bottom=0.020, left=0.20, top=0.900, right=0.800)
