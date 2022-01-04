@@ -82,7 +82,7 @@ class Main:
         self.clearValues()
         plt.figure(figsize=(10, 10))
         self.filePath = DataToCsv.makeCsv()
-        FuncAnimation(plt.gcf(), self.animateData, interval=1000)
+        ani = FuncAnimation(plt.gcf(), self.animateData, interval=1000)
         plt.tight_layout()
         plt.show()
 
@@ -158,7 +158,7 @@ class Main:
         plt.ylabel("KB/s")
         plt.xlabel("Time")
 
-    def animateData(self):
+    def animateData(self, i):
         """ Description:
                 This function fixes the plots positions accordingly;
                  it is called at every 1 second in order to update the values;

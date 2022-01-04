@@ -42,7 +42,7 @@ class History:
                 self.xNetRecvSpeed.append(float(row[5]))
                 self.xNetSentSpeed.append(float(row[6]))
             ok = 1
-        self.plotTry()
+        self.plotT()
 
     def plotDisk(self):
         """ Description:
@@ -89,12 +89,12 @@ class History:
         plt.ylabel("percent")
         plt.xlabel("Time")
 
-    def plotTry(self):
+    def plotT(self):
         """ Description:
                         This function fixes the plots positions accordingly;
                 """
         fig = plt.figure(figsize=(11, 8))
-        fig.canvas.set_window_title('Setting up window title.')
+        fig.canvas.set_window_title('History')
         fig.subplots_adjust(bottom=0.020, left=0.20, top=0.900, right=0.800)
         plt.title(Variable.variable.get())
         plt.subplot(3, 2, 1)
